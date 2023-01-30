@@ -53,7 +53,6 @@ def get_usage_from_db(table_name):
         conn.close()
         logging.info("Conncetion closed.")
 
-
 @log_action
 def get_disks_usage_24h():
     try:
@@ -71,7 +70,6 @@ def get_memory_usage_24h():
     except Exception as e:
         print("Error while collecting memory usage from database:", e)
         return []
-
 
 @log_action
 def get_cpu_usage_24h():

@@ -18,14 +18,12 @@ class MonitoringAppDatabase:
     # create tables to collect statistics
     @log_action
     def setup_database_tables(self):
-
         try:
             logging.debug("Creating tables in database...")
             self.cur.execute("CREATE TABLE IF NOT EXISTS disks (time TIMESTAMP, disk_name TEXT, size TEXT, used TEXT, Avail TEXT, Use TEXT, Mount_on TEXT);")
             self.cur.execute("CREATE TABLE IF NOT EXISTS memory (time TIMESTAMP, name TEXT, total INTEGER, used INTEGER, free INTEGER, shared INTEGER, buff INTEGER, available INTEGER);")
             self.cur.execute("CREATE TABLE IF NOT EXISTS cpu (time TIMESTAMP, cpu TEXT, usr FLOAT, nice FLOAT, sys FLOAT, iowait FLOAT, irq FLOAT, soft FLOAT, steal FLOAT, guest FLOAT, gnice FLOAT, idle FLOAT);")
             logging.info("Tables creation done successfully.")
-
             self.conn.commit()
         except Exception as e:
             print("Error setting up database tables: ", e)
@@ -37,8 +35,6 @@ class MonitoringAppDatabase:
         self.set_memory_usage_in_db()
         self.set_cpu_usage_in_db()
 
-        self.conn.commit()
-
     @log_action
     def set_disks_usage_in_db(self):
         try:
@@ -47,6 +43,7 @@ class MonitoringAppDatabase:
             for item in disks:
                 self.cur.execute("INSERT INTO disks (time, disk_name, size, used, Avail, Use, Mount_on) VALUES (?, ?, ?, ?, ?, ?, ?)",
                                  (datetime.datetime.now(), item["Filesystem"], item["Size"], item["Used"], item["Avail"], item["Use%"], item["Mounted"]))
+            self.conn.commit()
             logging.info("Inserting done successfully.")
         except sqlite3.InternalError as e:
             logging.exception("Error setting disks usage in database: ", e)
@@ -63,6 +60,7 @@ class MonitoringAppDatabase:
                 else:
                     self.cur.execute("INSERT INTO memory (time, name, total, used, free, shared, buff, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     (datetime.datetime.now(), item["name"], item["total"], item["used"], item["free"], item["shared"], item["buff/cache"], item["available"]))
+            self.conn.commit()
             logging.info("Inserting done successfully.")
         except sqlite3.InternalError as e:
             logging.exception("Error setting memory usage in database: ", e)
@@ -73,10 +71,10 @@ class MonitoringAppDatabase:
             cpu = statistics.get_cpu_usage()
             logging.debug("Inserting CPU usage into cpu table...")
             for item in cpu:
-                now = datetime.datetime.now()
                 self.cur.execute("INSERT INTO cpu (time, cpu, usr, nice, sys, iowait, irq, soft, steal, guest, gnice, idle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                        (datetime.datetime.now(), item["CPU"], item["%usr"], item["%nice"], item["%sys"], item["%iowait"], item["%irq"], item["%soft"],
-                        item["%steal"], item["%guest"], item["%gnice"], item["%idle"]))
+                        (datetime.datetime.now(), item["CPU"], item["usr"], item["nice"], item["sys"], item["iowait"], item["irq"], item["soft"],
+                        item["steal"], item["guest"], item["gnice"], item["idle"]))
+            self.conn.commit()
             logging.info("Inserting done successfully.")
         except sqlite3.InternalError as e:
             logging.exception("Error setting CPU usage in database: ", e)
@@ -109,7 +107,7 @@ class MonitoringAppDatabase:
 
 if __name__ == "__main__":
    app = MonitoringAppDatabase()
-   app.refresh_database()
    app.setup_database_tables()
    app.set_and_collect_data_in_database()
+   app.refresh_database()
    app.close_conncetion()

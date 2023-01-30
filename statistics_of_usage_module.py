@@ -17,7 +17,7 @@ def get_data_as_dict(headers, lines, start_line, typ):
         for line in lines[start_line:]:
             values = line.split()
             if typ == 'c':
-                values = values[2:]
+                values = values[1:]
             data.append(dict(zip(headers, values)))
         logging.info("Data converted to dictionary format successfully")
         return data
@@ -54,9 +54,10 @@ def get_cpu_usage():
         lines = get_data_as_lines(["mpstat", "-P","ALL"])
         logging.info("CPU statistics convertd to lines format successfully.")
         headers = lines[2].split()
-        headers = headers[2:]
+        headers = headers[1:]
+        headers = [name[1:] for name in headers[1:]] # to remove % sign from keys names
+        headers.insert(0,"CPU")
         return get_data_as_dict(headers, lines, 3, 'c')
     except Exception as e:
         print("Error in getting CPU usage:", e)
         return []
-

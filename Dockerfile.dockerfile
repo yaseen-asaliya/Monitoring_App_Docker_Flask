@@ -1,20 +1,21 @@
-FROM centos:7.9.2009
+FROM python:3.9
 
-RUN yum update -y \
- && yum install -y epel-release \
- && yum install -y python3 python3-pip sysstat crontabs \
- && pip3 install flask \
- && yum clean all
+RUN apt-get update && apt-get -y install cron vim python3 python3-pip sysstat
+RUN pip3 install flask
 
-COPY app.py /opt/app.py
+WORKDIR /opt
+
+COPY crontab /etc/cron.d/crontab
+
+COPY app.py /opt/
 COPY statistics_of_usage.py /opt/
 COPY statistics_of_usage_module.py /opt/
 COPY database_configrations.py /opt/
 COPY logger.py /opt/
 
-RUN chmod +x /opt/database_configrations.py \
- && echo "* * * * * /usr/bin/python3 /opt/database_configrations.py" >> /var/spool/cron/root
+RUN chmod +x /opt/database_configrations.py
 
-ENV LC_ALL=en_US.UTF-8
+RUN chmod 0644 /etc/cron.d/crontab
+RUN /usr/bin/crontab /etc/cron.d/crontab
 
-ENTRYPOINT FLASK_APP=/opt/app.py flask run --host=0.0.0.0
+ENTRYPOINT cron; FLASK_APP=/opt/app.py flask run --host=0.0.0.0
