@@ -11,6 +11,20 @@ $ docker run -it nouchka/sqlite3
 $ docker run yaseenasaliya/flask_monitoring_app:v1
 ```
 
+### How to use it?
+* To get disks usage 
+```
+http://172.17.0.2:5000/disk
+```
+* To get memory usage 
+```
+http://172.17.0.2:5000/memory
+```
+* To get cpu usage 
+```
+http://172.17.0.2:5000/cpu
+```
+
 ### How it was pushed on Docker Hub?
 * Build image localy with `v1` tage
 ```
