@@ -7,3 +7,4 @@ def log_action(func):
         logging.info(f"{func.__name__} was called and executed successfully.")
         return result
     return wrapper
+

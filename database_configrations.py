@@ -18,12 +18,14 @@ class MonitoringAppDatabase:
     # create tables to collect statistics
     @log_action
     def setup_database_tables(self):
+
         try:
             logging.debug("Creating tables in database...")
-            self.cur.execute("CREATE TABLE IF NOT EXISTS disks (time TIMESTAMP, disk_name TEXT, size TEXT, used TEXT, Avail TEXT, Use TEXT, Mount_on TEXT);")
+            self.cur.execute("CREATE TABLE IF NOT EXISTS disk (time TIMESTAMP, disk_name TEXT, size TEXT, used TEXT, Avail TEXT, Use TEXT, Mount_on TEXT);")
             self.cur.execute("CREATE TABLE IF NOT EXISTS memory (time TIMESTAMP, name TEXT, total INTEGER, used INTEGER, free INTEGER, shared INTEGER, buff INTEGER, available INTEGER);")
-            self.cur.execute("CREATE TABLE IF NOT EXISTS cpu (time TIMESTAMP, cpu TEXT, usr FLOAT, nice FLOAT, sys FLOAT, iowait FLOAT, irq FLOAT, soft FLOAT, steal FLOAT, guest FLOAT, gnice FLOAT, idle FLOAT);")
+            self.cur.execute("CREATE TABLE IF NOT EXISTS cpu (time TIMESTAMP, cpu_name TEXT, usr FLOAT, nice FLOAT, sys FLOAT, iowait FLOAT, irq FLOAT, soft FLOAT, steal FLOAT, guest FLOAT, gnice FLOAT, idle FLOAT);")
             logging.info("Tables creation done successfully.")
+
             self.conn.commit()
         except Exception as e:
             print("Error setting up database tables: ", e)
@@ -39,9 +41,10 @@ class MonitoringAppDatabase:
     def set_disks_usage_in_db(self):
         try:
             disks = statistics.get_disks_usage()
+
             logging.debug("Inserting disks usage into disk table...")
             for item in disks:
-                self.cur.execute("INSERT INTO disks (time, disk_name, size, used, Avail, Use, Mount_on) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                self.cur.execute("INSERT INTO disk (time, disk_name, size, used, Avail, Use, Mount_on) VALUES (?, ?, ?, ?, ?, ?, ?)",
                                  (datetime.datetime.now(), item["Filesystem"], item["Size"], item["Used"], item["Avail"], item["Use%"], item["Mounted"]))
             self.conn.commit()
             logging.info("Inserting done successfully.")
@@ -57,6 +60,7 @@ class MonitoringAppDatabase:
                 if item["name"] == "Swap:": # swap memory cause it has specific attributes
                     self.cur.execute("INSERT INTO memory (time, name, total, used, free, shared, buff, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     (datetime.datetime.now(), item["name"], item["total"], item["used"], item["free"], 0, 0, 0))
+
                 else:
                     self.cur.execute("INSERT INTO memory (time, name, total, used, free, shared, buff, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     (datetime.datetime.now(), item["name"], item["total"], item["used"], item["free"], item["shared"], item["buff/cache"], item["available"]))
@@ -70,12 +74,17 @@ class MonitoringAppDatabase:
         try:
             cpu = statistics.get_cpu_usage()
             logging.debug("Inserting CPU usage into cpu table...")
+
             for item in cpu:
-                self.cur.execute("INSERT INTO cpu (time, cpu, usr, nice, sys, iowait, irq, soft, steal, guest, gnice, idle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                self.cur.execute("INSERT INTO cpu (time, cpu_name, usr, nice, sys, iowait, irq, soft, steal, guest, gnice, idle) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
                         (datetime.datetime.now(), item["CPU"], item["usr"], item["nice"], item["sys"], item["iowait"], item["irq"], item["soft"],
                         item["steal"], item["guest"], item["gnice"], item["idle"]))
             self.conn.commit()
             logging.info("Inserting done successfully.")
+
+            result = [dict(zip([key[0] for key in self.cur.description], row)) for row in rows]
+            logging.info(result)
+
         except sqlite3.InternalError as e:
             logging.exception("Error setting CPU usage in database: ", e)
 
@@ -105,9 +114,35 @@ class MonitoringAppDatabase:
         self.conn.close()
         logging.info("Concetion closed.")
 
+    @log_action
+    def get_usage_from_db(self,table_name):
+        try:
+            logging.debug("Connecting to the database.")
+            conn = sqlite3.connect('/root/monitoring_app.db')
+            cursor = conn.cursor()
+            logging.info("Database connected successfully.")
+
+            logging.debug(f"Getting {table_name} usage from {table_name} table.")
+            cursor.execute(f"SELECT * FROM {table_name}")
+            rows = cursor.fetchall()
+            logging.info(f"Getting data from {table_name} successfully.")
+
+            result = [dict(zip([key[0] for key in cursor.description], row)) for row in rows]
+            logging.info(f"Convert {table_name} usage to dictonary format successfully.")
+            return result
+        except Exception as e:
+            logging.error(f"Error while fetching data from the database: {e}")
+            result = None
+        finally:
+            logging.debug("Closing connection.")
+            conn.close()
+            logging.info("Conncetion closed.")
+
 if __name__ == "__main__":
    app = MonitoringAppDatabase()
    app.setup_database_tables()
    app.set_and_collect_data_in_database()
    app.refresh_database()
    app.close_conncetion()
+   
+   
