@@ -82,9 +82,6 @@ class MonitoringAppDatabase:
             self.conn.commit()
             logging.info("Inserting done successfully.")
 
-            result = [dict(zip([key[0] for key in self.cur.description], row)) for row in rows]
-            logging.info(result)
-
         except sqlite3.InternalError as e:
             logging.exception("Error setting CPU usage in database: ", e)
 
