@@ -96,7 +96,7 @@ class MonitoringAppDatabase:
 
             # Delete rows older than 86400 sec (24 hours)
             logging.debug("Fetching old data(created since morethan one day)....")
-            current_time = datetime.datetime.now()
+
             for table in table_names:
                 self.cur.execute("DELETE FROM {} WHERE (strftime('%s','now') - strftime('%s',time)) > 86400".format(table))
 
