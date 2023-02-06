@@ -1,2 +1,2 @@
 0 * * * * /usr/bin/python3 /app/database_configrations.py
-0 * * * * python3 /app/set_html.py
+0 * * * * /usr/bin/python3 /app/set_html.py

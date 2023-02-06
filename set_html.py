@@ -120,7 +120,7 @@ def create_html_file(file_name, table_name, header, data):
         file.write(get_tabel(data['usage_for_last_24h']))
         file.write("</table>\n</div></html></body>")
 
-def initilaize_html_files():
+def initilaize_html_files(disk, memory, cpu):
     disk_header = ["Filesystem","Size","Used","Avail","Use","Mounted on"]
     memory_header = ["Name","Total","Used","Free","Shared","Buff/cache","Available"]
     cpu_header = ["CPU","usr%","nice%","sys%","iowait%","irq%","soft%","steal%","guest%","gnice%","idle%"]
@@ -137,11 +137,16 @@ def copy_file_to_apache_dir():
         dst_dir = f"/var/www/html/{file_name}.html"
         shutil.move(src_dir, dst_dir)
 
-
-if __name__ == "__main__":
+def execute():
     disk = json.loads(get_data_from_url("/disk"))
     memory = json.loads(get_data_from_url("/memory"))
     cpu = json.loads(get_data_from_url("/cpu"))
 
-    initilaize_html_files()
+    initilaize_html_files(disk, memory, cpu)
     copy_file_to_apache_dir()
+
+
+if __name__ == "__main__":
+    execute()
+
+
