@@ -1,7 +1,9 @@
 import socket
-import requests
+import urllib.request
 import shutil
 import json
+import logging
+from logger import log_action
 
 # Get current ip-address for container
 def get_container_ip():
@@ -9,17 +11,20 @@ def get_container_ip():
         s.connect(("8.8.8.8", 80))
         return s.getsockname()[0]
 
+@log_action
 def get_data_from_url(endpoint):
-    container_ip = get_container_ip()
-    base_url = f"http://{container_ip}:5000"
-    response = requests.get(base_url + endpoint)
-    result = []
-    if response.status_code == 200:
-        print("The request was successful. The response content:")
-        result = response.content
-    else:
-        print("The request failed with status code:", response.status_code)
-    return result
+    try:
+        container_ip = get_container_ip()
+        logging.info(f"Container ip = {container_ip}")
+        base_url = f"http://{container_ip}:5000"
+        logging.debug(f"Getting data from {base_url + endpoint}")
+        with urllib.request.urlopen(base_url + endpoint) as response:
+            result = response.read()
+        return result
+    except Exception as e:
+        logging.error(f"Error wile getting data : {e}")
+        print(e)
+        return []
 
 def get_css():
         return """
