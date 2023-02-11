@@ -12,7 +12,7 @@ $ docker run -p 80:80 yaseenasaliya/flask_monitoring_app:v1
 ```
 
 ### How to use it?
-> In html pages go to then select go to statistics button (still not working...)
+> In html pages go to then select go to statistics button
 ```
 http://localhost
 ```
