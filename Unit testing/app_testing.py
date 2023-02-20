@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/root/flask_monitoring_app')
 import unittest
 import json
 import app

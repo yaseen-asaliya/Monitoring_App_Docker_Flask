@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/root/flask_monitoring_app')
 import database_configrations as dbc
 import unittest
 from unittest.mock import Mock, patch
