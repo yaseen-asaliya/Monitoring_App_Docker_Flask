@@ -8,7 +8,7 @@ $ docker run -it nouchka/sqlite3
 ```
 * Install the app image using this command 
 ```
-$  docker run -it -v /:/host -p 8080:80 yaseenasaliya/flask_monitoring_app:v1
+$ docker run -it --privileged -v /:/host -p 8080:80 yaseenasaliya/flask_monitoring_app:v1
 ```
 
 ### How to use it?
