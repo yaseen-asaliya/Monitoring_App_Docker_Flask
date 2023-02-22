@@ -8,13 +8,13 @@ $ docker run -it nouchka/sqlite3
 ```
 * Install the app image using this command 
 ```
-$ docker run -p 80:80 yaseenasaliya/flask_monitoring_app:v1
+$  docker run -it -v /:/host -p 8080:80 yaseenasaliya/flask_monitoring_app:v1
 ```
 
 ### How to use it?
 > In html pages go to then select go to statistics button
 ```
-http://localhost
+http://localhost:8080
 ```
 > JSON
 * To get disks usage 
