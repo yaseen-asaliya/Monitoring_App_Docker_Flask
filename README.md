@@ -43,3 +43,11 @@ http://172.17.0.2:5000/cpu
 ```
 # docker push yaseenasaliya/flask_monitoring_app:v1
 ```
+
+* Here are some photos for collected usage
+> Disks usage
+![disk](https://user-images.githubusercontent.com/59315877/220713065-8f01376f-f597-4ce7-b2ac-3c1ae986a726.png)
+> Memory usage
+![mem](https://user-images.githubusercontent.com/59315877/220713076-8c023fe9-fbc7-4841-8810-4cb90bce88c2.png)
+> CPU usage
+![cpu](https://user-images.githubusercontent.com/59315877/220713072-a855e38a-1d16-4a56-98b6-5226afb57ccc.png)
