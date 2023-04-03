@@ -46,8 +46,8 @@ http://172.17.0.2:5000/cpu
 
 > Here are some photos for collected usage
 * Disks usage
-![disk](https://user-images.githubusercontent.com/59315877/220713065-8f01376f-f597-4ce7-b2ac-3c1ae986a726.png)
+![disks](https://user-images.githubusercontent.com/59315877/229504568-de9260bb-c77d-49cb-af58-ed285055e62d.png)
 * Memory usage
-![mem](https://user-images.githubusercontent.com/59315877/220713076-8c023fe9-fbc7-4841-8810-4cb90bce88c2.png)
+![memory](https://user-images.githubusercontent.com/59315877/229504580-2240f30b-2f00-4e83-b384-a574fb597a34.png)
 * CPU usage
-![cpu](https://user-images.githubusercontent.com/59315877/220713072-a855e38a-1d16-4a56-98b6-5226afb57ccc.png)
+![cpu](https://user-images.githubusercontent.com/59315877/229504541-b61a5ed4-7233-4808-b249-913765c72e5b.png)
