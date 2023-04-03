@@ -10,11 +10,24 @@
 
 
 #### Run it using `docker compose`
-* 
+* Create docker compose file `start-program.yml`
+```
+version: "3"
+services:
+  flask_monitoring_app:
+    build: .
+    container_name: monitoring_app
+    ports:
+      - "80:80"
+```
+* Run compose file in background 
+```
+# docker compose -f start-program.yml up -d
+```
 
 
 ### How to use it?
-> Go to localhost url
+* Go to localhost url
 ```
 http://localhost
 ```
