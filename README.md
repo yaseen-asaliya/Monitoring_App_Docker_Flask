@@ -44,6 +44,45 @@ http://172.17.0.2:5000/cpu
 # docker push yaseenasaliya/flask_monitoring_app:v1
 ```
 
+
+## Database Side
+* Pull mariadb docker image
+```
+# docker pull mariadb
+```
+* Create docker compose file `setup-database.yml` with mariadb database image and create a new user `yaseen` and database called `monitoring_app`
+```
+version: "3"
+
+services:
+  db:
+    image: mariadb
+    container_name: my_db
+    env_file: .env
+    ports:
+      - "3306:3306"
+```
+* Create `.env` file 
+```
+MYSQL_ROOT_PASSWORD: root
+MYSQL_DATABASE: monitoring_app
+MYSQL_USER: yaseen
+MYSQL_PASSWORD: yaseen
+```
+* Run a docker compose file 
+```
+# docker compose -f setup-database.yml up -d
+```
+* To connect to the database 
+```
+# mysql -P 3306 --protocol=tcp -u yaseen -pyaseen
+```
+
+
+
+
+
+
 > Here are some photos for collected usage
 * Disks usage
 ![disks](https://user-images.githubusercontent.com/59315877/229504568-de9260bb-c77d-49cb-af58-ed285055e62d.png)
